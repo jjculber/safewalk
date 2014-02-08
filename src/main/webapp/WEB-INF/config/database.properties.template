@@ -1,0 +1,4 @@
+db.driver=com.mysql.jdbc.Driver
+db.url=jdbc:mysql://url.rds.amazonaws.com:3306/database_name?autoReconnect=true&noAccessToProcedureBodies=true
+db.username=user
+db.password=pass

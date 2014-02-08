@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:security="http://www.springframework.org/schema/security"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+   http://www.springframework.org/schema/security 
+   http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+   <!-- To allow standards-based @Secured annotation, enable secured-annotations 
+      See Spring Security 3.1 Reference 2.4 Method Security - http://static.springsource.org/spring-security/site/docs/3.1.x/reference/ns-config.html#ns-protect-pointcut 
+      - http://static.springsource.org/spring-security/site/docs/3.1.x/reference/appendix-namespace.html#d0e8651 
+      See Spring Security 3.1 Reference 15.1.1 Common Built-In Expressions - http://static.springsource.org/spring-security/site/docs/3.1.x/reference/el-access.html -->
+   <security:global-method-security
+      secured-annotations="enabled" />
+
+   <!-- This is where we configure Spring-Security -->
+   <security:http auto-config="false" use-expressions="true"
+      access-denied-page="/" entry-point-ref="loginUrlAuthenticationEntryPoint">
+
+      <security:custom-filter position="FORM_LOGIN_FILTER"
+         ref="loginFilter" />
+      <!-- <security:form-login login-page="/" login-processing-url="/login" authentication-failure-url="/?error=Invalid 
+         username or password" default-target-url="/chat.do" /> -->
+      <security:logout invalidate-session="true"
+         logout-success-url="/" logout-url="/logout" />
+
+   </security:http>
+   
+   <security:authentication-manager alias="authenticationManager" />
+
+   <bean id="loginUrlAuthenticationEntryPoint"
+      class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+      <property name="loginFormUrl" value="/" />
+   </bean>
+
+   <bean id="loginFilter" class="com.example.security.AuthenticationFilter">
+      <property name="filterProcessesUrl" value="/login" />
+      <property name="authenticationManager" ref="authenticationManager" />
+      <property name="authenticationFailureHandler">
+         <bean
+            class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+            <property name="defaultFailureUrl" value="/?error=Login Failure" />
+         </bean>
+      </property>
+      <property name="authenticationSuccessHandler">
+         <bean
+            class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+            <property name="defaultTargetUrl" value="/chat.do" />
+         </bean>
+      </property>
+   </bean>
+
+</beans>
