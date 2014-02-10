@@ -71,7 +71,9 @@ public class UsersController {
 	public String confirm(@PathVariable(value = "confirmKey") String confirmKey) {
 		userService.confirmKey(confirmKey);
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		user.setConfirmKey(null);
+		if (user != null) {
+			user.setConfirmKey(null);
+		}
 		return "confirmSuccess";
 	}
 

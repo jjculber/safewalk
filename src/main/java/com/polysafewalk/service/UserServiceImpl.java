@@ -24,114 +24,155 @@ import com.polysafewalk.model.User;
 @Service
 public class UserServiceImpl implements UserService {
 
-   @Autowired
-   private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 
-   public void setDataSource(DataSource source) {
-      dataSource = source;
-   }
+	public void setDataSource(DataSource source) {
+		dataSource = source;
+	}
 
-   @Override
-   public void createNewUser(UserRegistrationForm form, String confirmKey) throws UsernameNotUniqueException {
+	@Override
+	public void createNewUser(UserRegistrationForm form, String confirmKey)
+			throws UsernameNotUniqueException {
 
-      String sql = "INSERT INTO users (first_name, last_name, email, password, confirmation) values (?,?,?,SHA2(?,512),?)";
-      Connection conn = null;
-      PreparedStatement ps = null;
+		String sql = "INSERT INTO users (first_name, last_name, email, password, confirmation) values (?,?,?,SHA2(?,512),?)";
+		Connection conn = null;
+		PreparedStatement ps = null;
 
-      try {
-         conn = dataSource.getConnection();
-         ps = conn.prepareStatement(sql);
+		try {
+			conn = dataSource.getConnection();
+			ps = conn.prepareStatement(sql);
 
-         ps.setString(1, form.getFirstName());
-         ps.setString(2, form.getLastName());
-         ps.setString(3, form.getEmail().toLowerCase());
-         ps.setString(4, form.getEmail().toLowerCase() + form.getPassword());
-         ps.setString(5, confirmKey);
+			ps.setString(1, form.getFirstName());
+			ps.setString(2, form.getLastName());
+			ps.setString(3, form.getEmail().toLowerCase());
+			ps.setString(4, form.getEmail().toLowerCase() + form.getPassword());
+			ps.setString(5, confirmKey);
 
-         ps.executeUpdate();
-      } catch (MySQLIntegrityConstraintViolationException e) {
-    	  throw new UsernameNotUniqueException();
-      } catch (SQLException e) {
-         e.printStackTrace();
-      } finally {
-         try {
-            ps.close();
-            conn.close();
-         } catch (SQLException e) {
-            e.printStackTrace();
-         }
-      }
-   }
+			ps.executeUpdate();
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			throw new UsernameNotUniqueException();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-   @Override
-   public Authentication authenticateUser(Authentication authToken) {
-      String sql = "SELECT * from users WHERE email=? AND password=SHA2(?,512)";
-      Connection conn = null;
-      PreparedStatement ps = null;
+	@Override
+	public Authentication authenticateUser(Authentication authToken) {
+		String sql = "SELECT * from users WHERE email=? AND password=SHA2(?,512)";
+		Connection conn = null;
+		PreparedStatement ps = null;
 
-      try {
-         conn = dataSource.getConnection();
-         ps = conn.prepareCall(sql);
-         
-         String email = ((String) authToken.getPrincipal()).toLowerCase();
-         String password = email + (String) authToken.getCredentials(); 
+		try {
+			conn = dataSource.getConnection();
+			ps = conn.prepareCall(sql);
 
-         ps.setString(1, email);
-         ps.setString(2, password);
-         ResultSet rs = ps.executeQuery();
+			String email = ((String) authToken.getPrincipal()).toLowerCase();
+			String password = email + (String) authToken.getCredentials();
 
-         if (rs.next()) {
-        	 User user = new User();
-             user.setEmail(rs.getString("email"));
-             user.setFirstName(rs.getString("first_name"));
-             user.setLastName(rs.getString("last_name"));
-             user.setConfirmKey(rs.getString("confirmation"));
-             user.setId(rs.getLong("id"));
+			ps.setString(1, email);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
 
-             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                      user, authToken.getCredentials(),
-                      Collections.singleton(new GrantedAuthorityImpl("ROLE_USER")));
-             return token;
-         } else {
-        	 throw new BadCredentialsException("bad credentials."); 
-         }
-         
-      } catch (SQLException e) {
-         e.printStackTrace();
-      } finally {
-         try {
-            ps.close();
-            conn.close();
-         } catch (SQLException e) {
-            e.printStackTrace();
-         }
-      }
-      throw new BadCredentialsException("bad credentials.");
-   }
+			if (rs.next()) {
+				User user = new User();
+				user.setEmail(rs.getString("email"));
+				user.setFirstName(rs.getString("first_name"));
+				user.setLastName(rs.getString("last_name"));
+				user.setConfirmKey(rs.getString("confirmation"));
+				user.setId(rs.getLong("id"));
 
-@Override
-public void confirmKey(String confirmKey) {
+				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+						user, authToken.getCredentials(),
+						Collections.singleton(new GrantedAuthorityImpl(
+								"ROLE_USER")));
+				return token;
+			} else {
+				throw new BadCredentialsException("bad credentials.");
+			}
 
-    String sql = "UPDATE users SET confirmation=NULL where confirmation=?";
-    Connection conn = null;
-    PreparedStatement ps = null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		throw new BadCredentialsException("bad credentials.");
+	}
 
-    try {
-       conn = dataSource.getConnection();
-       ps = conn.prepareStatement(sql);
+	@Override
+	public User getUserById(long id) {
+		String sql = "SELECT * from users WHERE id=?";
+		Connection conn = null;
+		PreparedStatement ps = null;
 
-       ps.setString(1, confirmKey);
-       ps.executeUpdate();
-    } catch (SQLException e) {
-       e.printStackTrace();
-    } finally {
-       try {
-          ps.close();
-          conn.close();
-       } catch (SQLException e) {
-          e.printStackTrace();
-       }
-    }
-}
+		try {
+			conn = dataSource.getConnection();
+			ps = conn.prepareCall(sql);
+
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				User user = new User();
+				user.setEmail(rs.getString("email"));
+				user.setFirstName(rs.getString("first_name"));
+				user.setLastName(rs.getString("last_name"));
+				user.setConfirmKey(rs.getString("confirmation"));
+				user.setId(rs.getLong("id"));
+
+				return user;
+			} else {
+				return null;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void confirmKey(String confirmKey) {
+
+		String sql = "UPDATE users SET confirmation=NULL where confirmation=?";
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+			conn = dataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+
+			ps.setString(1, confirmKey);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

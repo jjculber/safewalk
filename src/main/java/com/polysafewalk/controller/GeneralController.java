@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.polysafewalk.model.Log;
 import com.polysafewalk.model.User;
 import com.polysafewalk.service.AreaService;
+import com.polysafewalk.service.UserService;
 
 @Controller
 public class GeneralController {
 
 	@Autowired
 	private AreaService areaService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping("/")
 	public String home(
@@ -55,6 +59,14 @@ public class GeneralController {
 	@Secured("ROLE_USER")
 	public String confirmPending(Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
+
+		User loggedIn = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userService.getUserById(loggedIn.getId());
+		
+		if (user != null && user.isActive()) {
+			loggedIn.setConfirmKey(null);
+			return "redirect:/home";
+		}
 
 		map.put("title", "PolySafeWalk");
 

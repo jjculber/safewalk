@@ -47,5 +47,9 @@ public class User {
 	public void setConfirmKey(String confirmKey) {
 		this.confirmKey = confirmKey;
 	}
+	
+	public boolean isActive() {
+		return this.getConfirmKey() == null || this.getConfirmKey().isEmpty();
+	}
 
 }
