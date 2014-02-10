@@ -1,10 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:include page="header.jsp" />
 
-<div>
+<div class="thin_col">
+<div class="error">
 	<c:out value="${error}" />
 </div>
-<div class="thin_col">
    <form class="signin_form" action="/signup" method="post">
    create account
 		<div class="signup_fields">
