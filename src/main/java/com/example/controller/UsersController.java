@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.exception.UsernameNotUniqueException;
 import com.example.form.UserRegistrationForm;
+import com.example.model.User;
 import com.example.service.UserService;
 
 @Controller
@@ -69,6 +70,8 @@ public class UsersController {
 	@RequestMapping("/confirm/{confirmKey}")
 	public String confirm(@PathVariable(value = "confirmKey") String confirmKey) {
 		userService.confirmKey(confirmKey);
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		user.setConfirmKey(null);
 		return "confirmSuccess";
 	}
 

@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
              user.setEmail(rs.getString("email"));
              user.setFirstName(rs.getString("first_name"));
              user.setLastName(rs.getString("last_name"));
+             user.setConfirmKey(rs.getString("confirmation"));
              user.setId(rs.getLong("id"));
 
              UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(

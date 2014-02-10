@@ -44,8 +44,22 @@ public class GeneralController {
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
 		map.put("currentRoute", log);
-
+		
+		if (user.getConfirmKey() == null || user.getConfirmKey().isEmpty()) {
+			return "redirect:/confirmPending";
+		}
+		
 		return "userHome";
+	}
+
+	@RequestMapping("/confirmPending")
+	@Secured("ROLE_USER")
+	public String confirmPending(Map<String, Object> map, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		map.put("title", "PolySafeWalk");
+
+		return "confirmPending";
 	}
 
 	@RequestMapping("/signupform")

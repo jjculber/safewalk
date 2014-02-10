@@ -6,6 +6,7 @@ public class User {
 	private String email;
 	private String firstName;
 	private String lastName;
+	private String confirmKey;
 
 	public String getEmail() {
 		return email;
@@ -37,6 +38,14 @@ public class User {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getConfirmKey() {
+		return confirmKey;
+	}
+
+	public void setConfirmKey(String confirmKey) {
+		this.confirmKey = confirmKey;
 	}
 
 }
