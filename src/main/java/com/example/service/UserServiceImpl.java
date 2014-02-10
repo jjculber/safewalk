@@ -1,9 +1,9 @@
 package com.example.service;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Collections;
 
 import javax.sql.DataSource;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.example.exception.UsernameNotUniqueException;
 import com.example.form.UserRegistrationForm;
 import com.example.model.User;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 @SuppressWarnings("deprecation")
 @Service
@@ -32,35 +32,31 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public User getUser(String username) {
-      return null;
-   }
+   public void createNewUser(UserRegistrationForm form, String confirmKey) throws UsernameNotUniqueException {
 
-   @Override
-   public void createNewUser(UserRegistrationForm userRegistrationForm)
-            throws UsernameNotUniqueException {
-      // TODO add validation on username
-
-      String sql = "{call create_account(?,?,?)}";
+      String sql = "INSERT INTO users (first_name, last_name, email, password, confirmation) values (?,?,?,SHA2(?,512),?)";
       Connection conn = null;
-      CallableStatement cs = null;
+      PreparedStatement ps = null;
 
       try {
          conn = dataSource.getConnection();
-         cs = conn.prepareCall(sql);
+         ps = conn.prepareStatement(sql);
 
-         cs.setString(1, userRegistrationForm.getUsername());
-         cs.setString(2, userRegistrationForm.getPassword());
-         cs.registerOutParameter(3, Types.BIGINT);
-         cs.executeQuery();
+         ps.setString(1, form.getFirstName());
+         ps.setString(2, form.getLastName());
+         ps.setString(3, form.getEmail().toLowerCase());
+         ps.setString(4, form.getEmail().toLowerCase() + form.getPassword());
+         ps.setString(5, confirmKey);
+
+         ps.executeUpdate();
       } catch (MySQLIntegrityConstraintViolationException e) {
-         throw new UsernameNotUniqueException();
+    	  throw new UsernameNotUniqueException();
       } catch (SQLException e) {
-         // TODO
          e.printStackTrace();
       } finally {
          try {
-            cs.close();
+            ps.close();
+            conn.close();
          } catch (SQLException e) {
             e.printStackTrace();
          }
@@ -69,46 +65,72 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public Authentication authenticateUser(Authentication authToken) {
-      String sql = "{call authenticate_account(?,?,?,?,?,?)}";
+      String sql = "SELECT * from users WHERE email=? AND password=SHA2(?,512)";
       Connection conn = null;
-      CallableStatement cs = null;
+      PreparedStatement ps = null;
 
       try {
          conn = dataSource.getConnection();
-         cs = conn.prepareCall(sql);
+         ps = conn.prepareCall(sql);
+         
+         String email = ((String) authToken.getPrincipal()).toLowerCase();
+         String password = email + (String) authToken.getCredentials(); 
 
-         cs.setString(1, (String) authToken.getPrincipal());
-         cs.setString(2, (String) authToken.getCredentials());
-         cs.setString(3, "website_frontend");
-         cs.setString(4, "web");
-         cs.registerOutParameter(5, Types.VARCHAR);
-         cs.registerOutParameter(6, Types.BIGINT);
-         cs.executeQuery();
+         ps.setString(1, email);
+         ps.setString(2, password);
+         ResultSet rs = ps.executeQuery();
 
-         String handle = cs.getString(5);
-         long channelId = cs.getLong(6);
-         if (handle == null) {
-            throw new BadCredentialsException("bad credentials.");
+         if (rs.next()) {
+        	 User user = new User();
+             user.setEmail(rs.getString("email"));
+             user.setFirstName(rs.getString("first_name"));
+             user.setLastName(rs.getString("last_name"));
+             user.setId(rs.getLong("id"));
+
+             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                      user, authToken.getCredentials(),
+                      Collections.singleton(new GrantedAuthorityImpl("ROLE_USER")));
+             return token;
+         } else {
+        	 throw new BadCredentialsException("bad credentials."); 
          }
-
-         User user = new User();
-         user.setUsername(handle);
-         user.setChannelId(channelId);
-
-         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                  user, authToken.getCredentials(),
-                  Collections.singleton(new GrantedAuthorityImpl("ROLE_USER")));
-         return token;
+         
       } catch (SQLException e) {
          e.printStackTrace();
       } finally {
          try {
-            cs.close();
+            ps.close();
+            conn.close();
          } catch (SQLException e) {
             e.printStackTrace();
          }
       }
-      return null;
+      throw new BadCredentialsException("bad credentials.");
    }
+
+@Override
+public void confirmKey(String confirmKey) {
+
+    String sql = "UPDATE users SET confirmation=NULL where confirmation=?";
+    Connection conn = null;
+    PreparedStatement ps = null;
+
+    try {
+       conn = dataSource.getConnection();
+       ps = conn.prepareStatement(sql);
+
+       ps.setString(1, confirmKey);
+       ps.executeUpdate();
+    } catch (SQLException e) {
+       e.printStackTrace();
+    } finally {
+       try {
+          ps.close();
+          conn.close();
+       } catch (SQLException e) {
+          e.printStackTrace();
+       }
+    }
+}
 
 }

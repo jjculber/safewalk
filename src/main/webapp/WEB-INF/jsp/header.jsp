@@ -1,4 +1,3 @@
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -7,27 +6,73 @@
 <script src="/resources/js/jquery-1.10.2.min.js"></script>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"></link>
 <link rel="icon" href="/favicon.ico" type="image/x-icon"></link>
-
+<style>
+.page_width {
+	width: 980px;
+	background-color: #fcfcf0;
+	margin: 0 auto;
+}
+body {
+	background-color: #006838;
+	margin: 0px;
+	font-family: MarketingScript;
+	font-size: 26px;
+}
+@font-face {
+	font-family: Rockwell;
+	src: url('https://s3.amazonaws.com/polysafewalk_assets/Rockwell.ttf');
+}
+@font-face {
+	font-family: MarketingScript;
+	src: url('https://s3.amazonaws.com/polysafewalk_assets/MarketingScript.ttf');
+}
+.logo_div {
+	text-align: center;
+}
+#logo_id {
+	width: 400px;
+}
+.thin_col {
+	width: 260px;
+	margin: 0 auto;
+	padding-bottom: 40px;
+}
+a:active, a:hover, a:visited, a:link {
+	color: #006838;
+	text-decoration: none;
+}
+.footer_bar {
+	margin: 5px;
+}
+.rockwell {
+	font-family: Rockwell;
+}
+.button {
+background-color: #aaa;
+border: 0;
+padding: 2px 5px;
+border-radius: 6px;
+font-family: MarketingScript;
+font-size: 16px;
+color: #000;
+}
+input {
+	width:200px;
+	height: 20px;
+	margin: 4px;
+}
+input[type="submit"] {
+	width: auto;
+	padding: 5px 10px 25px 10px;
+	color: #000;
+}
+</style>
 </head>
 
 <body>
 <div class="page_width">
-   <div class="nav_bar">
-      <a href="/" class="tab tab_left ${home}">Home</a>
-      <sec:authorize access="isAnonymous()">
-         <form class="login_form" action="/login" method="post">
-            <div class="login_fields">
-               <input type="text" id="j_username" name="j_username"
-                  placeholder="Username" class="login_input"/> 
-               <input type="password" id="j_password" name="j_password" 
-                  placeholder="Password"  class="login_input"/>
-               <input class="login_submit" type="submit" value="Log in" />
-            </div>
-         </form>
-      </sec:authorize>
-      <sec:authorize access="isAuthenticated()">
-         <a class="logout_button tab" href="/logout">Log Out</a>
-      </sec:authorize>
-   </div>
-</div>
-<div class="page_width center_unit">
+	<div class="logo_div">
+		<a href="/home">
+			<img id="logo_id" src="https://s3.amazonaws.com/polysafewalk_assets/psw.png"/>
+		</a>
+	</div>
