@@ -47,11 +47,9 @@ public class UsersController {
 					false, "utf-8");
 			String confirmUrl = "http://www.polysafewalk.com/confirm/"
 					+ confirmKey;
-			// String htmlMsg = "Thank you for signing up!<br/><br/>"
-			// + "Please confirm your email address:<br/>" + "<a href=\""
-			// + confirmUrl + "\">" + confirmUrl + "</a><br/><br/>Thanks!";
-			System.out.println(confirmUrl);
-			String htmlMsg = "Please go to " + "http://google.com";
+			 String htmlMsg = "Thank you for signing up!<br/><br/>"
+			 + "Please confirm your email address:<br/>" + "<a href=\""
+			 + confirmUrl + "\">" + confirmUrl + "</a><br/><br/>Thanks!";
 			mimeMessage.setContent(htmlMsg, "text/html");
 			helper.setTo(email);
 			helper.setSubject("Thanks for signing up for PolySafeWalk!");

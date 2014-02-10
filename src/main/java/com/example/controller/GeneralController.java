@@ -28,7 +28,7 @@ public class GeneralController {
 			Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 		map.put("error", error);
 
 		return "home";
@@ -39,7 +39,7 @@ public class GeneralController {
 	public String home(Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
@@ -52,7 +52,7 @@ public class GeneralController {
 	public String signupform(Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 
 		return "signupform";
 	}
@@ -62,7 +62,7 @@ public class GeneralController {
 	public String cancel(Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
@@ -76,7 +76,7 @@ public class GeneralController {
 	public String create(Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 
 		map.put("fromAreas", areaService.getFromAreas());
 		map.put("toAreas", areaService.getToAreas());
@@ -90,7 +90,7 @@ public class GeneralController {
 			Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 
 		map.put("routes", areaService.getRoutes(fromArea, toArea));
 
@@ -103,7 +103,7 @@ public class GeneralController {
 			Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		map.put("title", "Example Webapp");
+		map.put("title", "PolySafeWalk");
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		areaService.createLog(user.getId(), route);
 		
