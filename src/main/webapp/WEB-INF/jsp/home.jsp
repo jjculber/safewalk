@@ -3,7 +3,7 @@
 <jsp:include page="header.jsp" />
 
 <div class="thin_col">
-<div>
+<div class="error">
 	<c:out value="${error}" />
 </div>
 	

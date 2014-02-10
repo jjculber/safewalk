@@ -76,6 +76,9 @@ input[type="submit"] {
 	padding: 5px 10px 25px 10px;
 	color: #000;
 }
+.error {
+	color: #f00;
+}
 </style>
 </head>
 

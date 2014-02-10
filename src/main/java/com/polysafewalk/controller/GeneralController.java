@@ -22,10 +22,10 @@ public class GeneralController {
 
 	@Autowired
 	private AreaService areaService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@RequestMapping("/")
 	public String home(
 			@RequestParam(value = "error", required = false) String error,
@@ -45,10 +45,11 @@ public class GeneralController {
 
 		map.put("title", "PolySafeWalk");
 
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
 		map.put("currentRoute", log);
-		
+
 		if (user.getConfirmKey() != null && !user.getConfirmKey().isEmpty()) {
 			return "redirect:/confirmPending";
 		}
@@ -57,12 +58,13 @@ public class GeneralController {
 
 	@RequestMapping("/confirmPending")
 	@Secured("ROLE_USER")
-	public String confirmPending(Map<String, Object> map, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String confirmPending(Map<String, Object> map,
+			HttpServletRequest request, HttpServletResponse response) {
 
-		User loggedIn = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User loggedIn = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		User user = userService.getUserById(loggedIn.getId());
-		
+
 		if (user != null && user.isActive()) {
 			loggedIn.setConfirmKey(null);
 			return "redirect:/home";
@@ -74,8 +76,12 @@ public class GeneralController {
 	}
 
 	@RequestMapping("/signupform")
-	public String signupform(Map<String, Object> map, HttpServletRequest request,
+	public String signupform(
+			@RequestParam(value = "error", required = false) String error,
+			Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
+		
+		map.put("error", error);
 
 		map.put("title", "PolySafeWalk");
 
@@ -89,7 +95,8 @@ public class GeneralController {
 
 		map.put("title", "PolySafeWalk");
 
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
 		areaService.deleteLog(log);
 
@@ -111,9 +118,9 @@ public class GeneralController {
 
 	@RequestMapping("/select")
 	@Secured("ROLE_USER")
-	public String select(@RequestParam long fromArea, @RequestParam long toArea,
-			Map<String, Object> map, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String select(@RequestParam long fromArea,
+			@RequestParam long toArea, Map<String, Object> map,
+			HttpServletRequest request, HttpServletResponse response) {
 
 		map.put("title", "PolySafeWalk");
 
@@ -129,12 +136,11 @@ public class GeneralController {
 			HttpServletResponse response) {
 
 		map.put("title", "PolySafeWalk");
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		areaService.createLog(user.getId(), route);
-		
+
 		return "selectThanks";
 	}
-	
-	
 
 }

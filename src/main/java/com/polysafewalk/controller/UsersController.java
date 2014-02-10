@@ -36,10 +36,15 @@ public class UsersController {
 	public String registerUser(UserRegistrationForm userRegistrationForm,
 			HttpServletRequest request) {
 
+		String email = userRegistrationForm.getEmail();
+		String regex = "^[a-zA-z0-9]{1,15}@calpoly\\.edu$";
+		if (email == null || email.isEmpty() || !email.matches(regex)) {
+			return "redirect:/signupform?error=Email must be a valid calpoly email address.";
+		}
+
 		try {
 			String confirmKey = UUID.randomUUID().toString();
 			userService.createNewUser(userRegistrationForm, confirmKey);
-			String email = userRegistrationForm.getEmail();
 			String password = userRegistrationForm.getPassword();
 			doAutoLogin(email, password, request);
 
