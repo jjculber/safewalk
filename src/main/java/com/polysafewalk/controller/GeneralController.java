@@ -49,6 +49,7 @@ public class GeneralController {
 				.getAuthentication().getPrincipal();
 		Log log = areaService.getLog(user.getId());
 		map.put("currentRoute", log);
+		map.put("user", user);
 
 		if (user.getConfirmKey() != null && !user.getConfirmKey().isEmpty()) {
 			return "redirect:/confirmPending";

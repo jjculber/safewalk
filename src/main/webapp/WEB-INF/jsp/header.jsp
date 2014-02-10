@@ -57,7 +57,7 @@ a:active, a:hover, a:visited, a:link {
 .rockwell {
 	font-family: Rockwell;
 }
-.button {
+.button, a.button {
 background-color: #aaa;
 border: 0;
 padding: 2px 5px;
@@ -78,6 +78,13 @@ input[type="submit"] {
 }
 .error {
 	color: #f00;
+}
+.grey_text {
+	color: #aaa;
+}
+h2 {
+	margin-top: 10px;
+	margin-bottom: 0px;
 }
 </style>
 </head>

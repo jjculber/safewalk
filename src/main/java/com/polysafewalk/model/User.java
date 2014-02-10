@@ -51,5 +51,9 @@ public class User {
 	public boolean isActive() {
 		return this.getConfirmKey() == null || this.getConfirmKey().isEmpty();
 	}
+	
+	public String getFullName() {
+		return this.getFirstName() + " " + this.getLastName();
+	}
 
 }
