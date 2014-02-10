@@ -1,9 +1,9 @@
-package com.example.service;
+package com.polysafewalk.service;
 
 import org.springframework.security.core.Authentication;
 
-import com.example.exception.UsernameNotUniqueException;
-import com.example.form.UserRegistrationForm;
+import com.polysafewalk.exception.UsernameNotUniqueException;
+import com.polysafewalk.form.UserRegistrationForm;
 
 public interface UserService {
 

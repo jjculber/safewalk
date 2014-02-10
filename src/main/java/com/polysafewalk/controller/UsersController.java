@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.polysafewalk.controller;
 
 import java.util.UUID;
 
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.example.exception.UsernameNotUniqueException;
-import com.example.form.UserRegistrationForm;
-import com.example.model.User;
-import com.example.service.UserService;
+import com.polysafewalk.exception.UsernameNotUniqueException;
+import com.polysafewalk.form.UserRegistrationForm;
+import com.polysafewalk.model.User;
+import com.polysafewalk.service.UserService;
 
 @Controller
 public class UsersController {
@@ -57,14 +57,14 @@ public class UsersController {
 			helper.setFrom("info@polysafewalk.com");
 			mailSender.send(mimeMessage);
 
-			return "redirect:/chat";
+			return "redirect:/home";
 
 		} catch (UsernameNotUniqueException e) {
 			return "redirect:/?error=Email%20already%20signed%20up";
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
-		return "redirect:/chat";
+		return "redirect:/home";
 	}
 
 	@RequestMapping("/confirm/{confirmKey}")

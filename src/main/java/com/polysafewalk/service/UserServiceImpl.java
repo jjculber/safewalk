@@ -1,4 +1,4 @@
-package com.example.service;
+package com.polysafewalk.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,10 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.stereotype.Service;
 
-import com.example.exception.UsernameNotUniqueException;
-import com.example.form.UserRegistrationForm;
-import com.example.model.User;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import com.polysafewalk.exception.UsernameNotUniqueException;
+import com.polysafewalk.form.UserRegistrationForm;
+import com.polysafewalk.model.User;
 
 @SuppressWarnings("deprecation")
 @Service

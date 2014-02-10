@@ -1,4 +1,4 @@
-package com.example.service;
+package com.polysafewalk.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,9 +13,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.model.Area;
-import com.example.model.Log;
-import com.example.model.Route;
+import com.polysafewalk.model.Area;
+import com.polysafewalk.model.Log;
+import com.polysafewalk.model.Route;
 
 @Service
 public class AreaServiceImpl implements AreaService {

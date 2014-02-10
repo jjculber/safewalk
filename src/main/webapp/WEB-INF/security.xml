@@ -29,7 +29,7 @@
 		<property name="loginFormUrl" value="/" />
 	</bean>
 
-	<bean id="loginFilter" class="com.example.security.AuthenticationFilter">
+	<bean id="loginFilter" class="com.polysafewalk.security.AuthenticationFilter">
 		<property name="filterProcessesUrl" value="/login" />
 		<property name="authenticationManager" ref="authenticationManager" />
 		<property name="authenticationFailureHandler">

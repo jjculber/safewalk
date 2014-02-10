@@ -1,4 +1,4 @@
-package com.example.security;
+package com.polysafewalk.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.TextEscapeUtils;
 
-import com.example.service.UserService;
+import com.polysafewalk.service.UserService;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

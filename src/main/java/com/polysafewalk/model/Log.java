@@ -1,4 +1,4 @@
-package com.example.model;
+package com.polysafewalk.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

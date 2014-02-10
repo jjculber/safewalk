@@ -1,10 +1,10 @@
-package com.example.service;
+package com.polysafewalk.service;
 
 import java.util.List;
 
-import com.example.model.Area;
-import com.example.model.Log;
-import com.example.model.Route;
+import com.polysafewalk.model.Area;
+import com.polysafewalk.model.Log;
+import com.polysafewalk.model.Route;
 
 public interface AreaService {
 

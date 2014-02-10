@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.polysafewalk.controller;
 
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.model.Log;
-import com.example.model.User;
-import com.example.service.AreaService;
+import com.polysafewalk.model.Log;
+import com.polysafewalk.model.User;
+import com.polysafewalk.service.AreaService;
 
 @Controller
 public class GeneralController {
@@ -45,10 +45,9 @@ public class GeneralController {
 		Log log = areaService.getLog(user.getId());
 		map.put("currentRoute", log);
 		
-		if (user.getConfirmKey() == null || user.getConfirmKey().isEmpty()) {
+		if (user.getConfirmKey() != null && !user.getConfirmKey().isEmpty()) {
 			return "redirect:/confirmPending";
 		}
-		
 		return "userHome";
 	}
 

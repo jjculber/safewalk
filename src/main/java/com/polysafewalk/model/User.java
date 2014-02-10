@@ -1,4 +1,4 @@
-package com.example.model;
+package com.polysafewalk.model;
 
 public class User {
 

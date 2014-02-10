@@ -1,4 +1,4 @@
-package com.example.form;
+package com.polysafewalk.form;
 
 public class UserRegistrationForm {
 
