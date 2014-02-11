@@ -1,5 +1,6 @@
 package com.polysafewalk.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,11 +22,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.polysafewalk.exception.UsernameNotUniqueException;
 import com.polysafewalk.form.UserRegistrationForm;
+import com.polysafewalk.model.Log;
+import com.polysafewalk.model.Notification;
 import com.polysafewalk.model.User;
+import com.polysafewalk.service.AreaService;
 import com.polysafewalk.service.UserService;
 
 @Controller
 public class UsersController {
+
+	@Autowired
+	private AreaService areaService;
 
 	@Autowired
 	private UserService userService;
@@ -53,9 +61,9 @@ public class UsersController {
 					false, "utf-8");
 			String confirmUrl = "http://www.polysafewalk.com/confirm/"
 					+ confirmKey;
-			 String htmlMsg = "Thank you for signing up!<br/><br/>"
-			 + "Please confirm your email address:<br/>" + "<a href=\""
-			 + confirmUrl + "\">" + confirmUrl + "</a><br/><br/>Thanks!";
+			String htmlMsg = "Thank you for signing up!<br/><br/>"
+					+ "Please confirm your email address:<br/>" + "<a href=\""
+					+ confirmUrl + "\">" + confirmUrl + "</a><br/><br/>Thanks!";
 			mimeMessage.setContent(htmlMsg, "text/html");
 			helper.setTo(email);
 			helper.setSubject("Thanks for signing up for PolySafeWalk!");
@@ -75,7 +83,8 @@ public class UsersController {
 	@RequestMapping("/confirm/{confirmKey}")
 	public String confirm(@PathVariable(value = "confirmKey") String confirmKey) {
 		userService.confirmKey(confirmKey);
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		if (user != null) {
 			user.setConfirmKey(null);
 		}
@@ -96,6 +105,42 @@ public class UsersController {
 					.setAuthentication(authentication);
 		} catch (Exception e) {
 			SecurityContextHolder.getContext().setAuthentication(null);
+			e.printStackTrace();
+		}
+	}
+
+	@Scheduled(fixedRate = 60000)
+	public void walkNotificationTask() {
+		// every 60 seconds
+
+		// get unsent notifications
+		List<Notification> notifications = areaService.getNotifications();
+		for (Notification note : notifications) {
+			User user = userService.getUserById(note.getUserId());
+			Log log = areaService.getLog(user.getId());
+			if (note.getRouteId() == log.getRouteId()) {
+				sendReminderEmail(note, user);
+				areaService.markNotificationSent(note, 1);
+			} else {
+				areaService.markNotificationSent(note, 2);
+			}
+
+		}
+	}
+
+	private void sendReminderEmail(Notification notification, User user) {
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper;
+			helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
+			String htmlMsg = "Your walk is scheduled to leave in less than 10 minutes."
+					+ "<br/><br/>Thanks,<br/>PolySafeWalk";
+			mimeMessage.setContent(htmlMsg, "text/html");
+			helper.setTo(user.getEmail());
+			helper.setSubject("Walk Reminder");
+			helper.setFrom("info@polysafewalk.com");
+			mailSender.send(mimeMessage);
+		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
 	}

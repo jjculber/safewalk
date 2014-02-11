@@ -3,13 +3,13 @@ package com.polysafewalk.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class Log {
 
 	private long id;
 	private Date time;
 	private String fromAreaName;
 	private String toAreaName;
+	private long routeId;
 
 	public long getId() {
 		return id;
@@ -41,5 +41,13 @@ public class Log {
 
 	public void setToAreaName(String toAreaName) {
 		this.toAreaName = toAreaName;
+	}
+
+	public long getRouteId() {
+		return routeId;
+	}
+
+	public void setRouteId(long routeId) {
+		this.routeId = routeId;
 	}
 }

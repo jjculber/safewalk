@@ -38,6 +38,10 @@ public class Route {
 	public String getTime() {
 		return new SimpleDateFormat("h:mm a").format(time);
 	}
+	
+	public Date getDateTime() {
+		return time;
+	}
 
 	public void setTime(Date time) {
 		this.time = time;

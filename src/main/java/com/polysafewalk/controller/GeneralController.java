@@ -1,6 +1,9 @@
 package com.polysafewalk.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.polysafewalk.model.Log;
+import com.polysafewalk.model.Route;
 import com.polysafewalk.model.User;
 import com.polysafewalk.service.AreaService;
 import com.polysafewalk.service.UserService;
@@ -22,7 +26,7 @@ public class GeneralController {
 
 	@Autowired
 	private AreaService areaService;
-
+	
 	@Autowired
 	private UserService userService;
 
@@ -130,6 +134,7 @@ public class GeneralController {
 		return "select";
 	}
 
+	@SuppressWarnings("deprecation")
 	@RequestMapping("/selectRoute")
 	@Secured("ROLE_USER")
 	public String selectRoute(@RequestParam long route,
@@ -140,6 +145,16 @@ public class GeneralController {
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		areaService.createLog(user.getId(), route);
+		
+		Route selectedRoute = areaService.getRoute(route);
+		
+		Date time = selectedRoute.getDateTime();
+		TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
+		Calendar c = Calendar.getInstance(tz);
+		c.set(Calendar.HOUR_OF_DAY, time.getHours());
+		c.set(Calendar.MINUTE, time.getMinutes());
+		c.add(Calendar.MINUTE, -10);
+		areaService.scheduleNotification(user.getId(), route, c.getTime());
 
 		return "selectThanks";
 	}
