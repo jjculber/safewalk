@@ -394,7 +394,7 @@ public class AreaServiceImpl implements AreaService {
 	}
 
 	@Override
-	public void markNotificationSent(Notification notification, long value) {
+	public void markNotificationSent(Notification notification, int value) {
 		String sql = "UPDATE notification SET sent=? where id=?";
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -403,7 +403,7 @@ public class AreaServiceImpl implements AreaService {
 			conn = dataSource.getConnection();
 			ps = conn.prepareCall(sql);
 
-			ps.setLong(1, value);
+			ps.setInt(1, value);
 			ps.setLong(2, notification.getId());
 			ps.executeUpdate();
 

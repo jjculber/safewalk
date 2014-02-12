@@ -116,12 +116,15 @@ public class UsersController {
 		// get unsent notifications
 		List<Notification> notifications = areaService.getNotifications();
 		for (Notification note : notifications) {
+			System.out.println("Notif id: " + note.getId());
 			User user = userService.getUserById(note.getUserId());
 			Log log = areaService.getLog(user.getId());
 			if (note.getRouteId() == log.getRouteId()) {
+				System.out.println("sending email.");
 				sendReminderEmail(note, user);
 				areaService.markNotificationSent(note, 1);
 			} else {
+				System.out.println("not valid anymore.");
 				areaService.markNotificationSent(note, 2);
 			}
 

@@ -20,6 +20,6 @@ public interface AreaService {
 	public int countWalkers(long route);
 	public void scheduleNotification(long userId, long routeId, Date time);
 	public List<Notification> getNotifications();
-	public void markNotificationSent(Notification notification, long value);
+	public void markNotificationSent(Notification notification, int value);
 
 }
