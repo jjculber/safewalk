@@ -119,7 +119,7 @@ public class UsersController {
 			System.out.println("Notif id: " + note.getId());
 			User user = userService.getUserById(note.getUserId());
 			Log log = areaService.getLog(user.getId());
-			if (note.getRouteId() == log.getRouteId()) {
+			if (log != null && note.getRouteId() == log.getRouteId()) {
 				System.out.println("sending email.");
 				sendReminderEmail(note, user);
 				areaService.markNotificationSent(note, 1);
