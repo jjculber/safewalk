@@ -367,6 +367,8 @@ public class AreaServiceImpl implements AreaService {
 			String timeToSend = sdf.format(c.getTime());
 			
 			ps.setString(1, timeToSend);
+			
+			System.out.println(timeToSend);
 
 			ResultSet rs = ps.executeQuery();
 
