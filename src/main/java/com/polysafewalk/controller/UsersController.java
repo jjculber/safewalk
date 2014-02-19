@@ -74,7 +74,7 @@ public class UsersController {
 			User user = (User) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal();
 			user.setConfirmKey(confirmKey);
-			
+
 			sendConfirmationEmail(user);
 
 			return "redirect:/home";
@@ -87,10 +87,15 @@ public class UsersController {
 	@RequestMapping("/confirm/{confirmKey}")
 	public String confirm(@PathVariable(value = "confirmKey") String confirmKey) {
 		userService.confirmKey(confirmKey);
-		User user = (User) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
-		if (user != null) {
-			user.setConfirmKey(null);
+
+		try {
+			User user = (User) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			if (user != null) {
+				user.setConfirmKey(null);
+			}
+		} catch (Exception e) {
+			// ignore
 		}
 		return "confirmSuccess";
 	}
@@ -147,11 +152,11 @@ public class UsersController {
 
 				Map<String, Object> model = new HashMap<String, Object>();
 				model.put("user", user);
-				model.put("count", routeService.countWalkers(notification.getRouteId()));
+				model.put("count",
+						routeService.countWalkers(notification.getRouteId()));
 
 				String text = VelocityEngineUtils.mergeTemplateIntoString(
-						velocityEngine, "walk-reminder.vm",
-						model);
+						velocityEngine, "walk-reminder.vm", model);
 				message.setText(text, true);
 			}
 		};
@@ -171,8 +176,7 @@ public class UsersController {
 				model.put("confirmKey", user.getConfirmKey());
 
 				String text = VelocityEngineUtils.mergeTemplateIntoString(
-						velocityEngine, "registration-confirmation.vm",
-						model);
+						velocityEngine, "registration-confirmation.vm", model);
 				message.setText(text, true);
 			}
 		};
