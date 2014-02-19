@@ -33,6 +33,8 @@ import com.polysafewalk.service.LogService;
 import com.polysafewalk.service.NotificationService;
 import com.polysafewalk.service.UserService;
 
+import org.apache.velocity.app.VelocityEngine;
+
 @Controller
 public class UsersController {
 
