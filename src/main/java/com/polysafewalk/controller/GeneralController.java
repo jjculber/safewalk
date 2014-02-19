@@ -19,6 +19,9 @@ import com.polysafewalk.model.Log;
 import com.polysafewalk.model.Route;
 import com.polysafewalk.model.User;
 import com.polysafewalk.service.AreaService;
+import com.polysafewalk.service.LogService;
+import com.polysafewalk.service.NotificationService;
+import com.polysafewalk.service.RouteService;
 import com.polysafewalk.service.UserService;
 
 @Controller
@@ -26,6 +29,15 @@ public class GeneralController {
 
 	@Autowired
 	private AreaService areaService;
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@Autowired
+	private RouteService routeService;
+	
+	@Autowired
+	private LogService logService;
 	
 	@Autowired
 	private UserService userService;
@@ -51,7 +63,7 @@ public class GeneralController {
 
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
-		Log log = areaService.getLog(user.getId());
+		Log log = logService.getLog(user.getId());
 		map.put("currentRoute", log);
 		map.put("user", user);
 
@@ -102,8 +114,8 @@ public class GeneralController {
 
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
-		Log log = areaService.getLog(user.getId());
-		areaService.deleteLog(log);
+		Log log = logService.getLog(user.getId());
+		logService.deleteLog(log);
 
 		return "redirect:/home";
 	}
@@ -129,7 +141,7 @@ public class GeneralController {
 
 		map.put("title", "PolySafeWalk");
 
-		map.put("routes", areaService.getRoutes(fromArea, toArea));
+		map.put("routes", routeService.getRoutes(fromArea, toArea));
 
 		return "select";
 	}
@@ -144,9 +156,9 @@ public class GeneralController {
 		map.put("title", "PolySafeWalk");
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
-		areaService.createLog(user.getId(), route);
+		logService.createLog(user.getId(), route);
 		
-		Route selectedRoute = areaService.getRoute(route);
+		Route selectedRoute = routeService.getRoute(route);
 		
 		Date time = selectedRoute.getDateTime();
 		TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
@@ -154,7 +166,7 @@ public class GeneralController {
 		c.set(Calendar.HOUR_OF_DAY, time.getHours());
 		c.set(Calendar.MINUTE, time.getMinutes());
 		c.add(Calendar.MINUTE, -10);
-		areaService.scheduleNotification(user.getId(), route, c.getTime());
+		notificationService.scheduleNotification(user.getId(), route, c.getTime());
 
 		return "selectThanks";
 	}

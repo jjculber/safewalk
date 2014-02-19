@@ -25,14 +25,18 @@ import com.polysafewalk.form.UserRegistrationForm;
 import com.polysafewalk.model.Log;
 import com.polysafewalk.model.Notification;
 import com.polysafewalk.model.User;
-import com.polysafewalk.service.AreaService;
+import com.polysafewalk.service.LogService;
+import com.polysafewalk.service.NotificationService;
 import com.polysafewalk.service.UserService;
 
 @Controller
 public class UsersController {
 
 	@Autowired
-	private AreaService areaService;
+	private NotificationService notificationService;
+
+	@Autowired
+	private LogService logService;
 
 	@Autowired
 	private UserService userService;
@@ -114,18 +118,19 @@ public class UsersController {
 		// every 60 seconds
 
 		// get unsent notifications
-		List<Notification> notifications = areaService.getNotifications();
+		List<Notification> notifications = notificationService
+				.getNotifications();
 		for (Notification note : notifications) {
 			System.out.println("Notif id: " + note.getId());
 			User user = userService.getUserById(note.getUserId());
-			Log log = areaService.getLog(user.getId());
+			Log log = logService.getLog(user.getId());
 			if (log != null && note.getRouteId() == log.getRouteId()) {
 				System.out.println("sending email.");
 				sendReminderEmail(note, user);
-				areaService.markNotificationSent(note, 1);
+				notificationService.markNotificationSent(note, 1);
 			} else {
 				System.out.println("not valid anymore.");
-				areaService.markNotificationSent(note, 2);
+				notificationService.markNotificationSent(note, 2);
 			}
 
 		}
