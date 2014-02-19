@@ -8,6 +8,10 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +29,7 @@ public class LogServiceImpl implements LogService {
 
 	@Override
 	public void createLog(long userId, long routeId) {
-		// TODO switch to date parameter
-		String sql = "INSERT INTO log (user_id, route_id, date) VALUES (?,?,CURDATE())";
+		String sql = "INSERT INTO log (user_id, route_id, date) VALUES (?,?,?)";
 		Connection conn = null;
 		PreparedStatement ps = null;
 
@@ -34,8 +37,14 @@ public class LogServiceImpl implements LogService {
 			conn = dataSource.getConnection();
 			ps = conn.prepareCall(sql);
 
+			DateTime dt = new DateTime(
+					DateTimeZone.forID("America/Los_Angeles"));
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+			String curDate = fmt.print(dt);
+			
 			ps.setLong(1, userId);
 			ps.setLong(2, routeId);
+			ps.setString(3, curDate);
 
 			ps.executeUpdate();
 
@@ -54,20 +63,24 @@ public class LogServiceImpl implements LogService {
 
 	@Override
 	public Log getLog(long userId) {
-		// TODO switch to date parameter
 		String sql = "SELECT fa.name as faname, ta.name as taname, "
 				+ "r.time as rtime, l.id as lid, r.id as rid FROM log as l JOIN route as r on "
 				+ "l.route_id = r.id JOIN from_area as fa on r.from_area = "
 				+ "fa.id JOIN to_area as ta on r.to_area = ta.id "
-				+ "WHERE l.user_id=? AND l.date=CURDATE()";
+				+ "WHERE l.user_id=? AND l.date=?";
 		Connection conn = null;
 		PreparedStatement ps = null;
 
 		try {
 			conn = dataSource.getConnection();
 			ps = conn.prepareCall(sql);
+			
+			DateTime dt = new DateTime(DateTimeZone.forID("America/Los_Angeles"));
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+			String curDate = fmt.print(dt);
 
 			ps.setLong(1, userId);
+			ps.setString(2, curDate);
 
 			ResultSet rs = ps.executeQuery();
 

@@ -4,15 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.sql.DataSource;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public void scheduleNotification(long userId, long routeId, Date time) {
+	public void scheduleNotification(long userId, long routeId, DateTime time) {
 
 		String sql = "INSERT INTO notification (user_id, route_id, time_to_send) VALUES (?,?,?)";
 		Connection conn = null;
@@ -41,9 +41,10 @@ public class NotificationServiceImpl implements NotificationService {
 
 			ps.setLong(1, userId);
 			ps.setLong(2, routeId);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			String timeToSend = sdf.format(time);
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+			String timeToSend = fmt.print(time);
+
 			ps.setString(3, timeToSend);
 
 			ps.executeUpdate();
@@ -73,11 +74,9 @@ public class NotificationServiceImpl implements NotificationService {
 			conn = dataSource.getConnection();
 			ps = conn.prepareCall(sql);
 
-			TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
-			Calendar c = Calendar.getInstance(tz);
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String timeToSend = sdf.format(c.getTime());
+			DateTime dt = new DateTime(DateTimeZone.forID("America/Los_Angeles"));
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+			String timeToSend = fmt.print(dt);
 
 			ps.setString(1, timeToSend);
 

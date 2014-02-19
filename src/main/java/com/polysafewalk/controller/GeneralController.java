@@ -1,13 +1,15 @@
 package com.polysafewalk.controller;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -161,12 +163,18 @@ public class GeneralController {
 		Route selectedRoute = routeService.getRoute(route);
 		
 		Date time = selectedRoute.getDateTime();
-		TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
-		Calendar c = Calendar.getInstance(tz);
-		c.set(Calendar.HOUR_OF_DAY, time.getHours());
-		c.set(Calendar.MINUTE, time.getMinutes());
-		c.add(Calendar.MINUTE, -10);
-		notificationService.scheduleNotification(user.getId(), route, c.getTime());
+		
+		DateTimeZone tz = DateTimeZone.forID("America/Los_Angeles");
+		DateTime dt = new DateTime(tz).withHourOfDay(time.getHours()).withMinuteOfHour(time.getMinutes());
+		
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+		System.out.println(fmt.print(dt));
+		
+		dt = dt.minusMinutes(10);
+
+		System.out.println(fmt.print(dt));
+		
+		notificationService.scheduleNotification(user.getId(), route, dt);
 
 		return "selectThanks";
 	}

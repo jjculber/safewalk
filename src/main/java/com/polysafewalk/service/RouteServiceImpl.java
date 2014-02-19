@@ -10,6 +10,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +68,7 @@ public class RouteServiceImpl implements RouteService {
 
 	@Override
 	public int countWalkers(long route) {
-		String sql = "SELECT count(*) as count from log where date=curdate() AND route_id = ?";
+		String sql = "SELECT count(*) as count from log where route_id = ? AND date=?";
 		Connection conn = null;
 		PreparedStatement ps = null;
 
@@ -72,7 +76,12 @@ public class RouteServiceImpl implements RouteService {
 			conn = dataSource.getConnection();
 			ps = conn.prepareCall(sql);
 
+			DateTime dt = new DateTime(DateTimeZone.forID("America/Los_Angeles"));
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+			String curDate = fmt.print(dt);
+			
 			ps.setLong(1, route);
+			ps.setString(2, curDate);
 
 			ResultSet rs = ps.executeQuery();
 
