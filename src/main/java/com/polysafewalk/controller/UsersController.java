@@ -31,9 +31,8 @@ import com.polysafewalk.model.Notification;
 import com.polysafewalk.model.User;
 import com.polysafewalk.service.LogService;
 import com.polysafewalk.service.NotificationService;
+import com.polysafewalk.service.RouteService;
 import com.polysafewalk.service.UserService;
-
-import org.apache.velocity.app.VelocityEngine;
 
 @Controller
 public class UsersController {
@@ -46,6 +45,9 @@ public class UsersController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RouteService routeService;
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -145,6 +147,7 @@ public class UsersController {
 
 				Map<String, Object> model = new HashMap<String, Object>();
 				model.put("user", user);
+				model.put("count", routeService.countWalkers(notification.getRouteId()));
 
 				String text = VelocityEngineUtils.mergeTemplateIntoString(
 						velocityEngine, "walk-reminder.vm",

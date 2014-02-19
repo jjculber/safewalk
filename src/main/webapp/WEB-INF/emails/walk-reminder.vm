@@ -3,7 +3,8 @@
 <h3>Hi ${user.firstName},</h3>
 
 <div>
-   Your walk is scheduled to leave in less than 10 minutes.
+   Your walk is scheduled to leave in less than 10 minutes. 
+   Including yourself, there are <b>${count}</b> people scheduled to go on this walk.
 </div>
 <div>
 	Thanks,<br/>
