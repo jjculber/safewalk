@@ -1,0 +1,14 @@
+<html>
+<body>
+<h3>Hi ${user.firstName},</h3>
+
+<div>
+   Your walk is scheduled to leave in less than 10 minutes.
+</div>
+<div>
+	Thanks,<br/>
+	PolySafeWalk
+</div>
+</body>
+
+</html>
