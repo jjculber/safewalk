@@ -1,0 +1,18 @@
+<html>
+<body>
+<h3>Hi ${user.firstName},</h3>
+
+<div>
+Thank you for signing up!<br/>
+<br/>
+Please confirm your email address:<br/>
+<a href="http://www.polysafewalk.com/confirm/${confirmKey}">http://www.polysafewalk.com/confirm/${confirmKey}</a><br/>
+<br/>
+</div>
+<div>
+	Thanks,<br/>
+	PolySafeWalk
+</div>
+</body>
+
+</html>
