@@ -58,13 +58,13 @@ a:active, a:hover, a:visited, a:link {
 	font-family: Rockwell;
 }
 .button, a.button {
-background-color: #aaa;
-border: 0;
-padding: 2px 5px;
-border-radius: 6px;
-font-family: MarketingScript;
-font-size: 16px;
-color: #000;
+	background-color: #aaa;
+	border: 0;
+	padding: 2px 5px;
+	border-radius: 6px;
+	font-family: MarketingScript;
+	font-size: 16px;
+	color: #000;
 }
 input {
 	width:200px;
@@ -85,6 +85,15 @@ input[type="submit"] {
 h2 {
 	margin-top: 10px;
 	margin-bottom: 0px;
+}
+hr {
+	border: 1px solid #006838;
+	border-left: 0px;
+	border-right: 0px;
+	height: 3px;
+}
+.med-text {
+	font-size: 18px;
 }
 </style>
 </head>

@@ -19,7 +19,8 @@
    </form>
    <br/>
    or <a href="/signupform">create account</a>
-   <br/><br/>
+   <hr/>
+   <a href="/about">about</a>
 
 </div>
 <div class="clearer"></div>

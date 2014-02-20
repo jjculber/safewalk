@@ -31,16 +31,16 @@ public class GeneralController {
 
 	@Autowired
 	private AreaService areaService;
-	
+
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@Autowired
 	private RouteService routeService;
-	
+
 	@Autowired
 	private LogService logService;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -54,6 +54,14 @@ public class GeneralController {
 		map.put("error", error);
 
 		return "home";
+	}
+
+	@RequestMapping("/about")
+	public String about(Map<String, Object> map) {
+
+		map.put("title", "PolySafeWalk");
+
+		return "about";
 	}
 
 	@RequestMapping("/home")
@@ -99,7 +107,7 @@ public class GeneralController {
 			@RequestParam(value = "error", required = false) String error,
 			Map<String, Object> map, HttpServletRequest request,
 			HttpServletResponse response) {
-		
+
 		map.put("error", error);
 
 		map.put("title", "PolySafeWalk");
@@ -159,21 +167,23 @@ public class GeneralController {
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		logService.createLog(user.getId(), route);
-		
+
 		Route selectedRoute = routeService.getRoute(route);
-		
+
 		Date time = selectedRoute.getDateTime();
-		
+
 		DateTimeZone tz = DateTimeZone.forID("America/Los_Angeles");
-		DateTime dt = new DateTime(tz).withHourOfDay(time.getHours()).withMinuteOfHour(time.getMinutes());
-		
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+		DateTime dt = new DateTime(tz).withHourOfDay(time.getHours())
+				.withMinuteOfHour(time.getMinutes());
+
+		DateTimeFormatter fmt = DateTimeFormat
+				.forPattern("yyyy-MM-dd HH:mm:ss");
 		System.out.println(fmt.print(dt));
-		
+
 		dt = dt.minusMinutes(10);
 
 		System.out.println(fmt.print(dt));
-		
+
 		notificationService.scheduleNotification(user.getId(), route, dt);
 
 		return "selectThanks";
